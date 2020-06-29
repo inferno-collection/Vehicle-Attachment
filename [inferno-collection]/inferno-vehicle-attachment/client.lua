@@ -1,4 +1,4 @@
--- Inferno Collection Vehicle Attachment 1.0 Alpha
+-- Inferno Collection Vehicle Attachment 1.1 Alpha
 --
 -- Copyright (c) 2020, Christopher M, Inferno Collection. All rights reserved.
 --
@@ -91,6 +91,20 @@ function NewHint(Text)
     AddTextComponentString(Text)
     DisplayHelpTextFromStringLabel(0, 0, 1, -1)
 end
+
+function TowControls()
+    TriggerEvent("chat:addMessage", {
+        color = {0, 255, 0},
+        multiline = true,
+        args = {
+            "Tow",
+            "\nNUMPAD 8/5 (or Left Stick) = Forward/Backwards\n NUMPAD 4/6 (or Left Stick) = Left/Right\nNUMPAD +/- (or Left Stick) = Up/Down\nNUMPAD 7/9 (or Left Stick) = Rotate Left/Right\nHold Left Shift (or X)/Left Control (or A) = Speed Up/Slow Down\nEnter (or A) = Confirm Position"
+        }
+    })
+end
+
+RegisterNetEvent("Vehicle-Attachment:Client:Return")
+AddEventHandler("Vehicle-Attachment:Client:Return", function(NewVehiclesInUse) VehiclesInUse = NewVehiclesInUse end)
 
 Citizen.CreateThread(function()
     while true do
@@ -194,11 +208,7 @@ Citizen.CreateThread(function()
                                 SetEntityAsMissionEntity(VehicleBeingTowed, true, false)
                                 AttachEntityToEntity(VehicleBeingTowed, TowVehicle, -1, AttachVector, AttachRotVector, false, false, true, false, 2, true)
 
-                                TriggerEvent("chat:addMessage", {
-                                    color = {0, 255, 0},
-                                    multiline = true,
-                                    args = { "Tow", "\nNUMPAD 8/5 (or Left Stick) = Forward/Backwards\n NUMPAD 4/6 (or Left Stick) = Left/Right\nNUMPAD +/- (or Left Stick) = Up/Down\nNUMPAD 7/9 (or Left Stick) = Rotate Left/Right\nLeft Shift (or X)/Left Control (or A) = Speed Up/Slow Down\nEnter (or A) = Confirm Position" }
-                                })
+                                TowControls()
 
                                 Attachment = 3
                             end
@@ -207,7 +217,7 @@ Citizen.CreateThread(function()
                         end
                     end
                 end
-            elseif Attachment == 3 then
+            elseif Attachment == 3 or Attachment == 5 then
                 local VectorCopy = AttachVector
                 local VectorRotCopy = AttachRotVector
                 local AmountCopy = Config.ChangeAmount
@@ -236,13 +246,35 @@ Citizen.CreateThread(function()
                     elseif IsControlJustPressed(1, 118) then
                         AttachRotVector = vector3(AttachRotVector.x, AttachRotVector.y, AttachRotVector.z - (AmountCopy * 10))
                     elseif IsControlJustPressed(1, 201) then
-                        NewNotification("~g~Attachment confirmed! Drive safe.", false)
+                        if Attachment == 3 then
+                            NewNotification("~g~Attachment confirmed! Drive safe.", false)
 
-                        ResetEntityAlpha(VehicleBeingTowed)
+                            ResetEntityAlpha(VehicleBeingTowed)
 
-                        Attachment = 0
-                        VectorCopy = AttachVector
-                        VectorRotCopy = AttachRotVector
+                            Attachment = 0
+                            VectorCopy = AttachVector
+                            VectorRotCopy = AttachRotVector
+                        elseif Attachment == 5 then
+                            NewNotification("~g~Vehicle detached.", false)
+
+                            ResetEntityAlpha(VehicleBeingTowed)
+                            DetachEntity(VehicleBeingTowed, true, true)
+                            FreezeEntityPosition(VehicleBeingTowed, false)
+                            SetEntityCollision(VehicleBeingTowed, true, true)
+                            SetVehicleDoorsLockedForAllPlayers(VehicleBeingTowed, false)
+                            ApplyForceToEntityCenterOfMass(VehicleBeingTowed, 1, 0.0, 0.0, 0.0001, false, false, false, false)
+
+                            TriggerServerEvent("Vehicle-Attachment:Server:Remove", VehToNet(TowVehicle))
+                            TriggerServerEvent("Vehicle-Attachment:Server:Remove", VehToNet(VehicleBeingTowed))
+
+                            Attachment = 0
+                            TowVehicle = false
+                            VectorCopy = vector3(0.0, -2.0, 1.5)
+                            VectorRotCopy = vector3(0.0, 0.0, 0.0)
+                            AttachVector = vector3(0.0, -2.0, 1.5)
+                            AttachRotVector = vector3(0.0, 0.0, 0.0)
+                            VehicleBeingTowed = false
+                        end
                     end
 
                     if VectorCopy ~= AttachVector or VectorRotCopy ~= AttachRotVector then AttachEntityToEntity(VehicleBeingTowed, TowVehicle, -1, AttachVector, AttachRotVector, false, false, true, false, 2, true) end
@@ -257,73 +289,10 @@ Citizen.CreateThread(function()
                 SetEntityAlpha(VehicleBeingTowed, 200, 0)
                 AttachEntityToEntity(VehicleBeingTowed, TowVehicle, -1, AttachVector, AttachRotVector, false, false, true, false, 2, true)
 
-                TriggerEvent("chat:addMessage", {
-                    color = {0, 255, 0},
-                    multiline = true,
-                    args = { "Tow", "\nNUMPAD 8/5 (or Left Stick) = Forward/Backwards\n NUMPAD 4/6 (or Left Stick) = Left/Right\nNUMPAD +/- (or Left Stick) = Up/Down\nNUMPAD 7/9 (or Left Stick) = Rotate Left/Right\nLeft Shift (or X)/Left Control (or A) = Speed Up/Slow Down\nEnter (or A) = Confirm Position" }
-                })
+                TowControls()
 
                 Attachment = 5
-            elseif Attachment == 5 then
-                local VectorCopy = AttachVector
-                local VectorRotCopy = AttachRotVector
-                local AmountCopy = Config.ChangeAmount
-
-                if SpeedUp then
-                    AmountCopy = AmountCopy + 2.0
-                elseif SlowDown then
-                    AmountCopy = AmountCopy - 0.15
-                end
-
-                if DoesEntityExist(TowVehicle) and DoesEntityExist(VehicleBeingTowed) then
-                    if IsControlJustPressed(1, 111) then
-                        AttachVector = vector3(AttachVector.x, AttachVector.y + AmountCopy, AttachVector.z)
-                    elseif IsControlJustPressed(1, 112) then
-                        AttachVector = vector3(AttachVector.x, AttachVector.y - AmountCopy, AttachVector.z)
-                    elseif IsControlJustPressed(1, 108) then
-                        AttachVector = vector3(AttachVector.x - AmountCopy, AttachVector.y, AttachVector.z)
-                    elseif IsControlJustPressed(1, 109) then
-                        AttachVector = vector3(AttachVector.x + AmountCopy, AttachVector.y, AttachVector.z)
-                    elseif IsControlJustPressed(1, 314) then
-                        AttachVector = vector3(AttachVector.x, AttachVector.y, AttachVector.z + AmountCopy)
-                    elseif IsControlJustPressed(1, 315) then
-                        AttachVector = vector3(AttachVector.x, AttachVector.y, AttachVector.z - AmountCopy)
-                    elseif IsControlJustPressed(1, 117) then
-                        AttachRotVector = vector3(AttachRotVector.x, AttachRotVector.y, AttachRotVector.z + (AmountCopy * 10))
-                    elseif IsControlJustPressed(1, 118) then
-                        AttachRotVector = vector3(AttachRotVector.x, AttachRotVector.y, AttachRotVector.z - (AmountCopy * 10))
-                    elseif IsControlJustPressed(1, 201) then
-                        NewNotification("~g~Vehicle detached.", false)
-
-                        ResetEntityAlpha(VehicleBeingTowed)
-                        DetachEntity(VehicleBeingTowed, true, true)
-                        FreezeEntityPosition(VehicleBeingTowed, false)
-                        SetEntityCollision(VehicleBeingTowed, true, true)
-                        SetVehicleDoorsLockedForAllPlayers(VehicleBeingTowed, false)
-                        ApplyForceToEntity(VehicleBeingTowed, 4, 0.0, 0.0, 0.0001, 0.0, 0.0, 0.0, 0, false, true, true, false, true)
-
-                        TriggerServerEvent("Vehicle-Attachment:Server:Remove", VehToNet(TowVehicle))
-                        TriggerServerEvent("Vehicle-Attachment:Server:Remove", VehToNet(VehicleBeingTowed))
-
-                        Attachment = 0
-                        TowVehicle = false
-                        VectorCopy = vector3(0.0, -2.0, 1.5)
-                        VectorRotCopy = vector3(0.0, 0.0, 0.0)
-                        AttachVector = vector3(0.0, -2.0, 1.5)
-                        AttachRotVector = vector3(0.0, 0.0, 0.0)
-                        VehicleBeingTowed = false
-                    end
-
-                    if VectorCopy ~= AttachVector or VectorRotCopy ~= AttachRotVector then AttachEntityToEntity(VehicleBeingTowed, TowVehicle, -1, AttachVector, AttachRotVector, false, false, true, false, 2, true) end
-                else
-                    Attachment = 0
-                    TowVehicle = false
-                    AttachVector = vector3(0.0, -2.0, 1.5)
-                    AttachRotVector = vector3(0.0, 0.0, 0.0)
-                    VehicleBeingTowed = false
-                end
             elseif Attachment == -1 then
-
                 if TowVehicle then
                     TriggerServerEvent("Vehicle-Attachment:Server:Remove", VehToNet(TowVehicle))
 

@@ -1,4 +1,4 @@
--- Inferno Collection Vehicle Attachment 1.0 Alpha
+-- Inferno Collection Vehicle Attachment 1.1 Alpha
 --
 -- Copyright (c) 2020, Christopher M, Inferno Collection. All rights reserved.
 --
@@ -14,7 +14,7 @@ description "A lightweight vehicle attachment/tow script for FiveM."
 
 author "Inferno Collection (inferno-collection.com)"
 
-version "1.0 Alpha"
+version "1.1 Alpha"
 
 url "https://inferno-collection.com"
 

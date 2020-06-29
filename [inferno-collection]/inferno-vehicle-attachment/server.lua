@@ -1,4 +1,4 @@
--- Inferno Collection Vehicle Attachment 1.0 Alpha
+-- Inferno Collection Vehicle Attachment 1.1 Alpha
 --
 -- Copyright (c) 2020, Christopher M, Inferno Collection. All rights reserved.
 --
@@ -15,7 +15,7 @@
 
 local VehiclesInUse = {}
 
-RegisterServerEvent("Vehicle-Attachment:Server:Add")
+RegisterNetEvent("Vehicle-Attachment:Server:Add")
 AddEventHandler("Vehicle-Attachment:Server:Add", function(networkId)
     if not VehiclesInUse[networkId] then
         VehiclesInUse[networkId] = source
@@ -24,7 +24,7 @@ AddEventHandler("Vehicle-Attachment:Server:Add", function(networkId)
     TriggerClientEvent("Vehicle-Attachment:Client:Return", -1, VehiclesInUse)
 end)
 
-RegisterServerEvent("Vehicle-Attachment:Server:Remove")
+RegisterNetEvent("Vehicle-Attachment:Server:Remove")
 AddEventHandler("Vehicle-Attachment:Server:Remove", function(networkId)
     if VehiclesInUse[networkId] then
         VehiclesInUse[networkId] = source
