@@ -2,13 +2,17 @@
 # Inferno Collection: Vehicle Attachment
 [![Build Status](https://travis-ci.com/inferno-collection/Vehicle-Attachment.svg?branch=development)](https://travis-ci.com/inferno-collection/TIC)
 
-__Public Alpha Version 1.0__
+__Public Alpha Version 1.2__
 
-A lightweight vehicle attachment/tow script for FiveM. Attach vehicles to tow trucks and adjust the positioning with easy to use controls.
+A lightweight vehicle attachment/tow script for FiveM. Attach vehicles to tow trucks (or any other vehicle/trailer) and adjust the positioning with easy to use controls.
 
 Presently, the following can be customized:
-- Vehicles that can be used to tow other vehicles
-- Default movement speed of vehicle being attached  
+- Vehicles that can be used to tow other vehicles.
+- Default speed when choosing attachment position
+    - As well as the speed difference when speeding up or slowing down.
+- Toggleable line showing which vehicle you are selecting.
+- Toggleable selection sounds.
+- Toggleable chat message with instructions.
 
 Usage:
 - Go up to a tow vehicle and type `/attachment`
@@ -21,8 +25,3 @@ Usage:
 ![Image 1](https://i.ibb.co/VxRNcxd/image.png)
 
 > The Inferno Collection Team
-* ChristopherM
-* Scott_UK 
-* FrozenN00b
-***
-Like what you see? [Check out our other resource](https://inferno-collection.com/resources).

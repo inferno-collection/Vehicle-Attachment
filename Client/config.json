@@ -1,0 +1,18 @@
+{
+	"EnableLine": true,
+
+	"EnableSound": true,
+
+	"EnableChatMessage": true,
+
+	"TowVehicles": [
+		"flatbed",
+		"trflat"
+	],
+
+	"ChangeAmount": 0.2,
+
+	"FasterAmount": 2.0,
+
+	"SlowAmount": -0.15
+}

@@ -1,1 +1,7 @@
-.idea
+.vs
+bld
+packages
+Client/obj
+Server/obj
+Client/Client.csproj.user
+Server/Server.csproj.user
