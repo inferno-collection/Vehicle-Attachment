@@ -96,7 +96,8 @@ namespace InfernoCollection.VehicleCollection.Client
         [Command("attachment")]
         internal void OnAttachment()
         {
-            if (CONFIG.EnableSound) Game.PlaySound("TOGGLE_ON", "HUD_FRONTEND_DEFAULT_SOUNDSET");
+
+            Game.PlaySound("TOGGLE_ON", "HUD_FRONTEND_DEFAULT_SOUNDSET");
 
             if (_currentAttachment != AttachmentStage.None)
             {
@@ -160,7 +161,7 @@ namespace InfernoCollection.VehicleCollection.Client
                     if (!Game.IsControlJustPressed(0, Control.FrontendAccept)) break;
 
                     Screen.ShowNotification($"~g~{towTruck.LocalizedName} confirmed as towing vehicle!");
-                    if (CONFIG.EnableSound) Game.PlaySound("OK", "HUD_FRONTEND_DEFAULT_SOUNDSET");
+                    Game.PlaySound("OK", "HUD_FRONTEND_DEFAULT_SOUNDSET");
 
                     _towVehicle = towTruck;
                     _currentAttachment = AttachmentStage.VehicleToBeTowed;
@@ -236,7 +237,7 @@ namespace InfernoCollection.VehicleCollection.Client
                     }
 
                     Screen.ShowNotification($"~g~{_vehicleBeingTowed.LocalizedName} confirmed as vehicle to be towed! Follow instructions to position vehicle.");
-                    if (CONFIG.EnableSound) Game.PlaySound("OK", "HUD_FRONTEND_DEFAULT_SOUNDSET");
+                    Game.PlaySound("OK", "HUD_FRONTEND_DEFAULT_SOUNDSET");
 
                     ShowTowControls();
 
@@ -318,7 +319,7 @@ namespace InfernoCollection.VehicleCollection.Client
                     if (!Entity.Exists(_towVehicle) || !Entity.Exists(_vehicleBeingTowed))
                     {
                         Screen.ShowNotification("~g~Attachment canceled.");
-                        if (CONFIG.EnableSound) Game.PlaySound("CANCEL", "HUD_FREEMODE_SOUNDSET");
+                        Game.PlaySound("CANCEL", "HUD_FREEMODE_SOUNDSET");
 
                         _currentAttachment = AttachmentStage.Cancel;
 
@@ -367,7 +368,7 @@ namespace InfernoCollection.VehicleCollection.Client
                             _vehicleBeingTowed = null;
                         }
 
-                        if (CONFIG.EnableSound) Game.PlaySound("WAYPOINT_SET", "HUD_FRONTEND_DEFAULT_SOUNDSET");
+                        Game.PlaySound("WAYPOINT_SET", "HUD_FRONTEND_DEFAULT_SOUNDSET");
 
                         _currentAttachment = AttachmentStage.None;
 

@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Inferno Collection Vehicle Attachment 1.21 Alpha
  * 
  * Copyright (c) 2019-2020, Christopher M, Inferno Collection. All rights reserved.
@@ -19,7 +19,6 @@ namespace InfernoCollection.VehicleAttachment.Client.Models
     public class Config
     {
         public bool EnableLine { get; set; } = true;
-        public bool EnableSound { get; set; } = true;
         public bool EnableChatMessage { get; set; } = true;
 
         public IReadOnlyList<Model> TowVehicles { get; set; } =
