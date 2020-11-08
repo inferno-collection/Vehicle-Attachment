@@ -209,7 +209,6 @@ namespace InfernoCollection.VehicleCollection.Client
         /// <summary>
         /// Handles vehicle selection, attaching, detaching, and canceling
         /// </summary>
-        /// <returns></returns>
         [Tick]
         internal async Task OnTick()
         {
@@ -612,7 +611,7 @@ namespace InfernoCollection.VehicleCollection.Client
         /// <summary>
         /// Returns the vehicle infront of the player
         /// </summary>
-        /// <returns></returns>
+        /// <returns>Vehicle infront of player</returns>
         internal Vehicle FindVehicle()
         {
             RaycastResult raycast = World.RaycastCapsule(

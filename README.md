@@ -4,24 +4,27 @@
 
 __Public Alpha Version 1.21__
 
-A lightweight vehicle attachment/tow script for FiveM. Attach vehicles to tow trucks (or any other vehicle/trailer) and adjust the positioning with easy to use controls.
+A lightweight vehicle attachment/tow script for FiveM. Attach vehicles to other vehicles and adjust the positioning with easy to use keybinds.
 
 Presently, the following can be customized:
-- Vehicles that can be used to tow other vehicles.
-- Default speed when choosing attachment position
-    - As well as the speed difference when speeding up or slowing down.
-- Toggleable line showing which vehicle you are selecting.
-- Toggleable selection sounds.
-- Toggleable chat message with instructions.
+- Toggleable line that is drawn to show you what vehicle you are interacting with.
+- Toggleable chat message instructions on how to move vehicles around.
+- Attachment black/whitelist.
+    - Toggleable between the two.
+    - Toggleable option to have a complete whitelist, allowing control of which vehicles can and cannot be towed.
+- Max distance from tow vehicles other vehicles can be attached.
+- Control over how fast/slow attachment positioning is.
 
 Usage:
-- Go up to a tow vehicle and type `/attachment`
-- Select the tow vehicle and vehicle to be towed with the Enter key
-- Follow on screen instructions
-- When ready to detach, type `/attachment` again
+- Go up to a vehicle and type `/attach`
+- Select the tow vehicle, and then vehicle to be towed with the `Enter` key
+- Follow on screen instructions to position the vehicle
+- Repeat for as many vehicles as you would like to attach
+- When ready to detach, type `/detach` and vehicles will detach in the reverse order they were attached
 
 ***
 ### Pictures
 ![Image 1](https://i.ibb.co/VxRNcxd/image.png)
+![Image 2](https://i.ibb.co/zxXwSkj/SPOILER-unknown.png)
 
 > The Inferno Collection Team
