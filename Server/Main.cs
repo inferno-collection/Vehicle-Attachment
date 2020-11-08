@@ -21,24 +21,24 @@ namespace InfernoCollection.VehicleCollection.Server
     public class Main : BaseScript
     {
         #region General Variables
-        internal static HashSet<int> _vehiclesInUse = new HashSet<int>();
+        internal static List<int> _vehiclesInUse = new List<int>();
         #endregion
 
         #region Event Handlers
-        [EventHandler("Vehicle-Attachment:AddVehicle")]
+        [EventHandler("Inferno-Collection:Vehicle-Attachment:AddInUseVehicle")]
         internal void OnAddVehicle(int networkId)
         {
             if (!_vehiclesInUse.Contains(networkId)) _vehiclesInUse.Add(networkId);
 
-            TriggerClientEvent("Vehicle-Attachment:Sync", JsonConvert.SerializeObject(_vehiclesInUse));
+            TriggerClientEvent("Inferno-Collection:Vehicle-Attachment:Sync", JsonConvert.SerializeObject(_vehiclesInUse));
         }
 
-        [EventHandler("Vehicle-Attachment:RemoveVehicle")]
+        [EventHandler("Inferno-Collection:Vehicle-Attachment:RemoveInUseVehicle")]
         internal void OnRemoveVehicle(int networkId)
         {
             if (_vehiclesInUse.Contains(networkId)) _vehiclesInUse.Remove(networkId);
 
-            TriggerClientEvent("Vehicle-Attachment:Sync", JsonConvert.SerializeObject(_vehiclesInUse));
+            TriggerClientEvent("Inferno-Collection:Vehicle-Attachment:Sync", JsonConvert.SerializeObject(_vehiclesInUse));
         }
         #endregion
     }

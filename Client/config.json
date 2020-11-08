@@ -3,10 +3,15 @@
 
 	"EnableChatMessage": true,
 
-	"TowVehicles": [
-		"flatbed",
-		"trflat"
+	"AttachmentBlacklist": [
+		"blimp"
 	],
+
+	"BlacklistToWhitelist": false,
+
+	"WhitelistForTowedVehicles": false,
+
+	"MaxDistanceFromTowVehicle": 220.0,
 
 	"ChangeAmount": 0.2,
 

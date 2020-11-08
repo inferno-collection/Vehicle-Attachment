@@ -12,25 +12,14 @@
  */
 
 using CitizenFX.Core;
-using System.Collections.Generic;
 
 namespace InfernoCollection.VehicleAttachment.Client.Models
 {
-    public class Config
+    public class Towing
     {
-        public bool EnableLine { get; set; } = true;
-        public bool EnableChatMessage { get; set; } = true;
-
-        public IReadOnlyList<Model> AttachmentBlacklist { get; set; } =
-            new List<Model>() {
-                new Model("blimp")
-            };
-
-        public bool BlacklistToWhitelist { get; set; } = false;
-        public bool WhitelistForTowedVehicles { get; set; } = false;
-        public float MaxDistanceFromTowVehicle { get; set; } = 220.0f;
-        public float ChangeAmount { get; set; } = 0.2f;
-        public float FasterAmount { get; set; } = 2.0f;
-        public float SlowerAmount { get; set; } = -0.15f;
+        public int TowVehicle { get; set; } = -1;
+        public int VehicleBeingTowed { get; set; } = -1;
+        public Vector3 AttachmentPosition { get; set; }
+        public Vector3 AttachmentRotation { get; set; }
     }
 }
