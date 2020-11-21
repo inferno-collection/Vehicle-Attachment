@@ -1,0 +1,21 @@
+{
+	"EnableLine": true,
+
+	"EnableChatMessage": true,
+
+	"AttachmentBlacklist": [
+		"blimp"
+	],
+
+	"BlacklistToWhitelist": false,
+
+	"WhitelistForTowedVehicles": false,
+
+	"MaxDistanceFromTowVehicle": 220.0,
+
+	"ChangeAmount": 0.2,
+
+	"FasterAmount": 2.0,
+
+	"SlowAmount": -0.15
+}
