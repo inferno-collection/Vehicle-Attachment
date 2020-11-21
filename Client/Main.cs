@@ -1,5 +1,5 @@
 ﻿/*
- * Inferno Collection Vehicle Attachment 1.21 Alpha
+ * Inferno Collection Vehicle Attachment 1.21 Beta
  * 
  * Copyright (c) 2019-2020, Christopher M, Inferno Collection. All rights reserved.
  * 
@@ -55,8 +55,8 @@ namespace InfernoCollection.VehicleCollection.Client
         {
             string ConfigFile = null;
 
-            TriggerEvent("chat:addSuggestion", "/attach [help]", "Starts the process of attaching one vehicle to another.");
-            TriggerEvent("chat:addSuggestion", "/detach [help]", "Starts the process of detaching one vehicle from another.");
+            TriggerEvent("chat:addSuggestion", "/attach [help|cancel]", "Starts the process of attaching one vehicle to another.");
+            TriggerEvent("chat:addSuggestion", "/detach [help|cancel]", "Starts the process of detaching one vehicle from another.");
 
             try
             {
@@ -418,24 +418,27 @@ namespace InfernoCollection.VehicleCollection.Client
                 #region Cancel current attachments
                 case AttachmentStage.Cancel:
                     {
-                        Entity vehicleBeingTowed = Entity.FromNetworkId(_attachments.Last().VehicleBeingTowed);
-
-                        if (Entity.Exists(vehicleBeingTowed))
+                        if (_attachments.Count > 0)
                         {
-                            ResetTowedVehicle(vehicleBeingTowed);
+                            Entity vehicleBeingTowed = Entity.FromNetworkId(_attachments.Last().VehicleBeingTowed);
+
+                            if (Entity.Exists(vehicleBeingTowed))
+                            {
+                                ResetTowedVehicle(vehicleBeingTowed);
+                            }
+
+                            // Even though the vehicles may no longer exist, we still need to clear the Network IDs in case they get reused
+                            TriggerServerEvent("Inferno-Collection:Vehicle-Attachment:RemoveInUseVehicle", _attachments.Last().TowVehicle);
+                            TriggerServerEvent("Inferno-Collection:Vehicle-Attachment:RemoveInUseVehicle", _attachments.Last().VehicleBeingTowed);
+
+                            _attachments.RemoveAll(
+                                i =>
+                                    i.TowVehicle == _attachments.Last().TowVehicle &&
+                                    i.VehicleBeingTowed == _attachments.Last().VehicleBeingTowed
+                            );
                         }
 
-                        _attachmentStage = AttachmentStage.None;
-
-                        // Even though the vehicles may no longer exist, we still need to clear the Network IDs in case they get reused
-                        TriggerServerEvent("Inferno-Collection:Vehicle-Attachment:RemoveInUseVehicle", _attachments.Last().TowVehicle);
-                        TriggerServerEvent("Inferno-Collection:Vehicle-Attachment:RemoveInUseVehicle", _attachments.Last().VehicleBeingTowed);
-
-                        _attachments.RemoveAll(
-                            i =>
-                                i.TowVehicle == _attachments.Last().TowVehicle &&
-                                i.VehicleBeingTowed == _attachments.Last().VehicleBeingTowed
-                        );                       
+                        _attachmentStage = AttachmentStage.None;                
                     }
                     break;
                 #endregion
@@ -553,6 +556,9 @@ namespace InfernoCollection.VehicleCollection.Client
                         // NUMPAD Enter
                         else if (Game.IsControlJustPressed(0, Control.FrontendAccept)) 
                         {
+                            TriggerServerEvent("Inferno-Collection:Vehicle-Attachment:RemoveInUseVehicle", _attachments.Last().TowVehicle);
+                            TriggerServerEvent("Inferno-Collection:Vehicle-Attachment:RemoveInUseVehicle", _attachments.Last().VehicleBeingTowed);
+
                             if (_attachmentStage == AttachmentStage.Position)
                             {
                                 Screen.ShowNotification("~g~Attachment complete! Drive safe.");
@@ -576,9 +582,6 @@ namespace InfernoCollection.VehicleCollection.Client
                             Game.PlaySound("WAYPOINT_SET", "HUD_FRONTEND_DEFAULT_SOUNDSET");
 
                             _attachmentStage = AttachmentStage.None;
-
-                            TriggerServerEvent("Inferno-Collection:Vehicle-Attachment:RemoveInUseVehicle", _attachments.Last().TowVehicle);
-                            TriggerServerEvent("Inferno-Collection:Vehicle-Attachment:RemoveInUseVehicle", _attachments.Last().VehicleBeingTowed);
 
                             return;
                         }
