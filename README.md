@@ -1,8 +1,8 @@
 ![top_image|2120x352](https://i.imgur.com/eydEeF0.jpg) 
 # Inferno Collection: Vehicle Attachment
-[![Build Status](https://travis-ci.com/inferno-collection/Vehicle-Attachment.svg?branch=master)](https://travis-ci.com/inferno-collection/Vehicle-Attachment)
+[![Build Status](https://travis-ci.com/inferno-collection/Vehicle-Attachment.svg?branch=1.3-alpha)](https://travis-ci.com/inferno-collection/Vehicle-Attachment)
 
-__Public Beta Version 1.21__
+__Public Alpha Version 1.3__
 
 A lightweight vehicle attachment/tow script for FiveM. Attach vehicles to other vehicles and adjust the positioning with easy to use keybinds. Multiple attachments to the same vehicles (such as a flatbed trailer) are also possible.
 
@@ -22,7 +22,7 @@ Usage:
 - Repeat for as many vehicles as you would like to attach
 - When ready to detach, type `/detach` and vehicles will detach in the reverse order they were attached
 
-### Development Showcase Video
+### Development Showcase Video (Showing Public Beta Version 1.21)
 [![Watch the Development Showcase video](https://i.imgur.com/UWV9iOP.jpg)](https://www.youtube.com/watch?v=OnFhgwFtUKw)
 
 ### Pictures
