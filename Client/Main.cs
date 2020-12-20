@@ -37,7 +37,7 @@ namespace InfernoCollection.VehicleCollection.Client
         #endregion
 
         #region General Variables
-        internal static CrossFrameControl
+        internal static bool
             _goFaster,
             _goSlower;
 
@@ -50,13 +50,29 @@ namespace InfernoCollection.VehicleCollection.Client
         internal static AttachmentStage _attachmentStage = AttachmentStage.None;
         #endregion
 
-        #region Load configuration file and add chat suggestion
+        #region Constructor
         public Main()
         {
-            string ConfigFile = null;
-
             TriggerEvent("chat:addSuggestion", "/attach [help|cancel]", "Starts the process of attaching one vehicle to another.");
             TriggerEvent("chat:addSuggestion", "/detach [help|cancel]", "Starts the process of detaching one vehicle from another.");
+
+            #region Key Mapping
+            API.RegisterKeyMapping("inferno-vehicle-attachment-forward", "Move attached vehicle forward.", "keyboard", "NUMPAD8");
+            API.RegisterKeyMapping("inferno-vehicle-attachment-back", "Move attached vehicle back.", "keyboard", "NUMPAD5");
+            API.RegisterKeyMapping("inferno-vehicle-attachment-left", "Move attached vehicle left.", "keyboard", "NUMPAD4");
+            API.RegisterKeyMapping("inferno-vehicle-attachment-right", "Move attached vehicle right.", "keyboard", "NUMPAD6");
+            API.RegisterKeyMapping("inferno-vehicle-attachment-up", "Move attached vehicle up.", "keyboard", "PAGEUP");
+            API.RegisterKeyMapping("inferno-vehicle-attachment-down", "Move attached vehicle down.", "keyboard", "PAGEDOWN");
+            API.RegisterKeyMapping("inferno-vehicle-attachment-rotate-left", "Rotate attached vehicle left.", "keyboard", "NUMPAD7");
+            API.RegisterKeyMapping("inferno-vehicle-attachment-rotate-right", "Rotate attached vehicle right.", "keyboard", "NUMPAD9");
+            API.RegisterKeyMapping("inferno-vehicle-attachment-rotate-up", "Rotate attached vehicle up.", "keyboard", "INSERT");
+            API.RegisterKeyMapping("inferno-vehicle-attachment-rotate-down", "Rotate attached vehicle down.", "keyboard", "DELETE");
+            API.RegisterKeyMapping("inferno-vehicle-attachment-confirm", "Confirm attached vehicle.", "keyboard", "ENTER");
+            API.RegisterKeyMapping("inferno-vehicle-attachment-confirm", "Confirm attached vehicle.", "keyboard", "NUMPADENTER");
+            #endregion
+
+            #region Load configuration file
+            string ConfigFile = null;
 
             try
             {
@@ -84,10 +100,12 @@ namespace InfernoCollection.VehicleCollection.Client
             {
                 Debug.WriteLine("Loaded configuration file is empty, reverting to defaults.");
             }
+            #endregion
         }
         #endregion
 
         #region Command Handlers
+        #region Attach/detach
         /// <summary>
         /// Triggers event that starts the attaching process.
         /// Also handles the triggering of the canceling process, and showing the help information.
@@ -151,6 +169,42 @@ namespace InfernoCollection.VehicleCollection.Client
 
             OnRemoveLastAttachment();
         }
+        #endregion
+
+        #region Controls
+        [Command("inferno-vehicle-attachment-forward")]
+        internal void OnForward() => OnControl(AttachmentControl.Forward);
+
+        [Command("inferno-vehicle-attachment-back")]
+        internal void OnBack() => OnControl(AttachmentControl.Back);
+
+        [Command("inferno-vehicle-attachment-left")]
+        internal void OnLeft() => OnControl(AttachmentControl.Left);
+
+        [Command("inferno-vehicle-attachment-right")]
+        internal void OnRight() => OnControl(AttachmentControl.Right);
+
+        [Command("inferno-vehicle-attachment-up")]
+        internal void OnUp() => OnControl(AttachmentControl.Up);
+
+        [Command("inferno-vehicle-attachment-down")]
+        internal void OnDown() => OnControl(AttachmentControl.Down);
+
+        [Command("inferno-vehicle-attachment-rotate-left")]
+        internal void OnRotateLeft() => OnControl(AttachmentControl.RotateLeft);
+
+        [Command("inferno-vehicle-attachment-rotate-right")]
+        internal void OnRotateRight() => OnControl(AttachmentControl.RotateRight);
+
+        [Command("inferno-vehicle-attachment-rotate-up")]
+        internal void OnRotateUp() => OnControl(AttachmentControl.RotateUp);
+
+        [Command("inferno-vehicle-attachment-rotate-down")]
+        internal void OnRotateDown() => OnControl(AttachmentControl.RotateDown);
+
+        [Command("inferno-vehicle-attachment-confirm")]
+        internal void OnConfirm() => OnControl(AttachmentControl.Confirm);
+        #endregion
         #endregion
 
         #region Event Handlers
@@ -443,169 +497,23 @@ namespace InfernoCollection.VehicleCollection.Client
                     break;
                 #endregion
 
-                #region Adjust vehicle position
                 default:
+                    if (Game.IsControlPressed(0, Control.Sprint))
                     {
-                        float changeAmount = CONFIG.ChangeAmount;
-
-                        Vector3
-                            position = _attachments.Last().AttachmentPosition,
-                            rotation = _attachments.Last().AttachmentRotation;
-
-                        bool
-                            fast = Game.IsControlPressed(0, Control.Sprint),
-                            slow = Game.IsControlPressed(0, Control.VehicleSubDescend);
-
-                        Vehicle
-                            towVehicle = (Vehicle)Entity.FromNetworkId(_attachments.Last().TowVehicle),
-                            vehicleBeingTowed = (Vehicle)Entity.FromNetworkId(_attachments.Last().VehicleBeingTowed);
-
-                        // Because FiveM only takes one input at a time, this is how we
-                        // check if Shift or Ctrl are being held as well as another key
-                        if (fast)
-                        {
-                            _goFaster = CrossFrameControl.True;
-                        }
-                        else if (!fast && _goFaster == CrossFrameControl.True)
-                        {
-                            _goFaster = CrossFrameControl.FalseNextFrame;
-                        }
-                        else if (_goFaster == CrossFrameControl.FalseNextFrame)
-                        {
-                            _goFaster = CrossFrameControl.False;
-                        }
-
-                        if (!fast && slow)
-                        {
-                            _goSlower = CrossFrameControl.True;
-                        }
-                        else if (!slow && _goSlower == CrossFrameControl.True)
-                        {
-                            _goSlower = CrossFrameControl.FalseNextFrame;
-                        }
-                        else if (_goSlower == CrossFrameControl.FalseNextFrame)
-                        {
-                            _goSlower = CrossFrameControl.False;
-                        }
-
-                        if (_goFaster != CrossFrameControl.False)
-                        {
-                            changeAmount += CONFIG.FasterAmount;
-                        }
-
-                        if (_goSlower != CrossFrameControl.False)
-                        {
-                            changeAmount += CONFIG.SlowerAmount;
-                        }
-
-                        // Gets new position based of old position +/- increase amount
-                        // NUMPAD 8
-                        if (Game.IsControlJustPressed(0, Control.VehicleFlyPitchUpOnly))
-                        {
-                            position.Y += changeAmount;
-                        }
-                        // NUMPAD 5
-                        else if (Game.IsControlJustPressed(0, Control.VehicleFlyPitchDownOnly))
-                        {
-                            position.Y -= changeAmount;
-                        }
-                        // NUMPAD 4
-                        else if (Game.IsControlJustPressed(0, Control.VehicleFlyRollLeftOnly))
-                        {
-                            position.X -= changeAmount;
-                        }
-                        // NUMPAD 6
-                        else if (Game.IsControlJustPressed(0, Control.VehicleFlyRollRightOnly))
-                        {
-                            position.X += changeAmount;
-                        }
-                        // NUMPAD +
-                        else if (Game.IsControlJustPressed(0, Control.ReplayFOVIncrease))
-                        {
-                            position.Z += changeAmount;
-                        }
-                        // NUMPAD -
-                        else if (Game.IsControlJustPressed(0, Control.ReplayFOVDecrease))
-                        {
-                            position.Z -= changeAmount;
-                        }
-
-                        // Gets new rotation based of old position +/- increase amount
-                        // NUMPAD 7
-                        else if (Game.IsControlJustPressed(0, Control.VehicleFlySelectTargetLeft))
-                        {
-                            rotation.Z += changeAmount * 10; 
-                        }
-                        // NUMPAD 9
-                        else if (Game.IsControlJustPressed(0, Control.VehicleFlySelectTargetRight))
-                        {
-                            rotation.Z -= changeAmount * 10; 
-                        }
-
-                        if (!Entity.Exists(towVehicle) || !Entity.Exists(vehicleBeingTowed))
-                        {
-                            Game.PlaySound("CANCEL", "HUD_FREEMODE_SOUNDSET");
-                            Screen.ShowNotification("~g~Attachment canceled.");
-
-                            _attachmentStage = AttachmentStage.Cancel;
-
-                            return;
-                        }
-
-                        // Confirms placement
-                        // NUMPAD Enter
-                        else if (Game.IsControlJustPressed(0, Control.FrontendAccept)) 
-                        {
-                            TriggerServerEvent("Inferno-Collection:Vehicle-Attachment:RemoveInUseVehicle", _attachments.Last().TowVehicle);
-                            TriggerServerEvent("Inferno-Collection:Vehicle-Attachment:RemoveInUseVehicle", _attachments.Last().VehicleBeingTowed);
-
-                            if (_attachmentStage == AttachmentStage.Position)
-                            {
-                                Screen.ShowNotification("~g~Attachment complete! Drive safe.");
-
-                                vehicleBeingTowed.ResetOpacity();
-                                vehicleBeingTowed.IsCollisionEnabled = true;
-                            }
-                            else if (_attachmentStage == AttachmentStage.Detach)
-                            {
-                                Screen.ShowNotification($"~g~{vehicleBeingTowed.LocalizedName} deatached!");
-
-                                ResetTowedVehicle(vehicleBeingTowed);
-
-                                _attachments.RemoveAll(
-                                    i =>
-                                        i.TowVehicle == _attachments.Last().TowVehicle &&
-                                        i.VehicleBeingTowed == _attachments.Last().VehicleBeingTowed
-                                );
-                            }
-
-                            Game.PlaySound("WAYPOINT_SET", "HUD_FRONTEND_DEFAULT_SOUNDSET");
-
-                            _attachmentStage = AttachmentStage.None;
-
-                            return;
-                        }
-
-                        // Checks for new position or rotation, so attching is not done every frame
-                        if (position != _attachments.Last().AttachmentPosition || rotation != _attachments.Last().AttachmentRotation)
-                        {
-                            if (towVehicle.Position.DistanceToSquared2D(
-                                towVehicle.GetOffsetPosition(position)
-                            ) > CONFIG.MaxDistanceFromTowVehicle)
-                            {
-                                Screen.ShowNotification("~r~Cannot move there, too far from tow vehicle!", true);
-                                return;
-                            }
-
-                            vehicleBeingTowed.AttachTo(towVehicle, position, rotation);
-
-                            // Store current position so we can reference it later
-                            _attachments.Last().AttachmentPosition = position;
-                            _attachments.Last().AttachmentRotation = rotation;
-                        }
+                        _goFaster = true;
+                        _goSlower = false;
+                        break;
                     }
+                    else if (Game.IsControlPressed(0, Control.Duck))
+                    {
+                        _goFaster = false;
+                        _goSlower = true;
+                        break;
+                    }
+
+                    _goFaster = false;
+                    _goSlower = false;
                     break;
-                #endregion
             }
         }
         #endregion
@@ -667,6 +575,128 @@ namespace InfernoCollection.VehicleCollection.Client
             {
                 TriggerEvent("chatMessage", "Tow", new[] { 0, 255, 0 }, TOW_CONTROLS);
             }
+        }
+
+        internal void OnControl(AttachmentControl attachmentControl)
+        {
+            if (_attachmentStage != AttachmentStage.Position && _attachmentStage != AttachmentStage.Detach)
+            {
+                return;
+            }
+
+            float changeAmount = CONFIG.ChangeAmount;
+
+            if (_goFaster)
+            {
+                changeAmount += CONFIG.FasterAmount;
+            }
+            else if (_goSlower)
+            {
+                changeAmount += CONFIG.SlowerAmount;
+            }
+
+            Vector3
+                position = _attachments.Last().AttachmentPosition,
+                rotation = _attachments.Last().AttachmentRotation;
+
+            Vehicle
+                towVehicle = (Vehicle)Entity.FromNetworkId(_attachments.Last().TowVehicle),
+                vehicleBeingTowed = (Vehicle)Entity.FromNetworkId(_attachments.Last().VehicleBeingTowed);
+
+            if (!Entity.Exists(towVehicle) || !Entity.Exists(vehicleBeingTowed))
+            {
+                Game.PlaySound("CANCEL", "HUD_FREEMODE_SOUNDSET");
+                Screen.ShowNotification("~g~Attachment canceled.");
+
+                _attachmentStage = AttachmentStage.Cancel;
+
+                return;
+            }
+
+            switch (attachmentControl)
+            {
+                case AttachmentControl.Forward:
+                    position.Y += changeAmount;
+                    break;
+
+                case AttachmentControl.Back:
+                    position.Y -= changeAmount;
+                    break;
+
+                case AttachmentControl.Left:
+                    position.X -= changeAmount;
+                    break;
+
+                case AttachmentControl.Right:
+                    position.X += changeAmount;
+                    break;
+
+                case AttachmentControl.Up:
+                    position.Z += changeAmount;
+                    break;
+
+                case AttachmentControl.Down:
+                    position.Z -= changeAmount;
+                    break;
+
+                case AttachmentControl.RotateLeft:
+                    rotation.Z += changeAmount * 10;
+                    break;
+
+                case AttachmentControl.RotateRight:
+                    rotation.Z -= changeAmount * 10;
+                    break;
+
+                case AttachmentControl.RotateUp:
+                    rotation.X += changeAmount * 10;
+                    break;
+
+                case AttachmentControl.RotateDown:
+                    rotation.X -= changeAmount * 10;
+                    break;
+
+                case AttachmentControl.Confirm:
+                    TriggerServerEvent("Inferno-Collection:Vehicle-Attachment:RemoveInUseVehicle", _attachments.Last().TowVehicle);
+                    TriggerServerEvent("Inferno-Collection:Vehicle-Attachment:RemoveInUseVehicle", _attachments.Last().VehicleBeingTowed);
+
+                    if (_attachmentStage == AttachmentStage.Position)
+                    {
+                        Screen.ShowNotification("~g~Attachment complete! Drive safe.");
+
+                        vehicleBeingTowed.ResetOpacity();
+                        vehicleBeingTowed.IsCollisionEnabled = true;
+                    }
+                    else if (_attachmentStage == AttachmentStage.Detach)
+                    {
+                        Screen.ShowNotification($"~g~{vehicleBeingTowed.LocalizedName} deatached!");
+
+                        ResetTowedVehicle(vehicleBeingTowed);
+
+                        _attachments.RemoveAll(
+                            i =>
+                                i.TowVehicle == _attachments.Last().TowVehicle &&
+                                i.VehicleBeingTowed == _attachments.Last().VehicleBeingTowed
+                        );
+                    }
+
+                    Game.PlaySound("WAYPOINT_SET", "HUD_FRONTEND_DEFAULT_SOUNDSET");
+
+                    _attachmentStage = AttachmentStage.None;
+
+                    return;
+            }
+
+            if (towVehicle.Position.DistanceToSquared(towVehicle.GetOffsetPosition(position)) > CONFIG.MaxDistanceFromTowVehicle)
+            {
+                Screen.ShowNotification("~r~Cannot move there, too far from tow vehicle!", true);
+                return;
+            }
+
+            vehicleBeingTowed.AttachTo(towVehicle, position, rotation);
+
+            // Store current position so we can reference it later
+            _attachments.Last().AttachmentPosition = position;
+            _attachments.Last().AttachmentRotation = rotation;
         }
         #endregion
     }
