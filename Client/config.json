@@ -1,7 +1,9 @@
 {
 	"EnableLine": true,
 
-	"EnableChatMessage": true,
+	"EnableInstructions": true,
+
+	"InstructionDisplayTime" 15000,
 
 	"AttachmentBlacklist": [
 		"blimp"

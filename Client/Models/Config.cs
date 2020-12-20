@@ -19,7 +19,9 @@ namespace InfernoCollection.VehicleAttachment.Client.Models
     public class Config
     {
         public bool EnableLine { get; set; } = true;
-        public bool EnableChatMessage { get; set; } = true;
+        public bool EnableInstructions { get; set; } = true;
+
+        public int InstructionDisplayTime { get; set; } = 15000;
 
         public IReadOnlyList<Model> AttachmentBlacklist { get; set; } =
             new List<Model>() {

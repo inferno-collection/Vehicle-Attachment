@@ -33,7 +33,14 @@ namespace InfernoCollection.VehicleCollection.Client
 
         internal const string
             CONFIG_FILE = "config.json",
-            TOW_CONTROLS = "\nNUMPAD 8/5 (or Left Stick) = Forward/Backwards\n NUMPAD 4/6 (or Left Stick) = Left/Right\nNUMPAD +/- (or Left Stick) = Up/Down\nNUMPAD 7/9 (or Left Stick) = Rotate Left/Right\nHold Left Shift (or X)/Left Control (or A) = Speed Up/Slow Down\nEnter (or A) = Confirm Position";
+            TOW_CONTROLS =
+                "~INPUT_F8DD5118~/~INPUT_2F20FA6E~ = Forward/Backwards" +
+                "\n~INPUT_872241C1~/~INPUT_DEEBB52A~ = Left/Right" +
+                "\n~INPUT_32D078AF~/~INPUT_7B7B256B~ = Up/Down" +
+                "\n~INPUT_6DC8415B~/~INPUT_4EEC321F~ = Rotate Left/Right" +
+                "\n~INPUT_83B8F159~/~INPUT_EE722E7A~ = Rotate Up/Down" +
+                "\nHold ~INPUT_SPRINT~/~INPUT_DUCK~ = Speed Up/Slow Down" +
+                "\n~INPUT_94172EE1~ = Confirm Position";
         #endregion
 
         #region General Variables
@@ -57,18 +64,18 @@ namespace InfernoCollection.VehicleCollection.Client
             TriggerEvent("chat:addSuggestion", "/detach [help|cancel]", "Starts the process of detaching one vehicle from another.");
 
             #region Key Mapping
-            API.RegisterKeyMapping("inferno-vehicle-attachment-forward", "Move attached vehicle forward.", "keyboard", "NUMPAD8");
-            API.RegisterKeyMapping("inferno-vehicle-attachment-back", "Move attached vehicle back.", "keyboard", "NUMPAD5");
-            API.RegisterKeyMapping("inferno-vehicle-attachment-left", "Move attached vehicle left.", "keyboard", "NUMPAD4");
-            API.RegisterKeyMapping("inferno-vehicle-attachment-right", "Move attached vehicle right.", "keyboard", "NUMPAD6");
-            API.RegisterKeyMapping("inferno-vehicle-attachment-up", "Move attached vehicle up.", "keyboard", "PAGEUP");
-            API.RegisterKeyMapping("inferno-vehicle-attachment-down", "Move attached vehicle down.", "keyboard", "PAGEDOWN");
-            API.RegisterKeyMapping("inferno-vehicle-attachment-rotate-left", "Rotate attached vehicle left.", "keyboard", "NUMPAD7");
-            API.RegisterKeyMapping("inferno-vehicle-attachment-rotate-right", "Rotate attached vehicle right.", "keyboard", "NUMPAD9");
-            API.RegisterKeyMapping("inferno-vehicle-attachment-rotate-up", "Rotate attached vehicle up.", "keyboard", "INSERT");
-            API.RegisterKeyMapping("inferno-vehicle-attachment-rotate-down", "Rotate attached vehicle down.", "keyboard", "DELETE");
-            API.RegisterKeyMapping("inferno-vehicle-attachment-confirm", "Confirm attached vehicle.", "keyboard", "ENTER");
-            API.RegisterKeyMapping("inferno-vehicle-attachment-confirm", "Confirm attached vehicle.", "keyboard", "NUMPADENTER");
+            API.RegisterKeyMapping("inferno-vehicle-attachment-forward", "Move attached vehicle forward.", "keyboard", "NUMPAD8"); // ~INPUT_F8DD5118~
+            API.RegisterKeyMapping("inferno-vehicle-attachment-back", "Move attached vehicle back.", "keyboard", "NUMPAD5"); // ~INPUT_2F20FA6E~
+            API.RegisterKeyMapping("inferno-vehicle-attachment-left", "Move attached vehicle left.", "keyboard", "NUMPAD4"); // ~INPUT_872241C1~
+            API.RegisterKeyMapping("inferno-vehicle-attachment-right", "Move attached vehicle right.", "keyboard", "NUMPAD6"); // ~INPUT_DEEBB52A~
+            API.RegisterKeyMapping("inferno-vehicle-attachment-up", "Move attached vehicle up.", "keyboard", "PAGEUP"); // ~INPUT_32D078AF~
+            API.RegisterKeyMapping("inferno-vehicle-attachment-down", "Move attached vehicle down.", "keyboard", "PAGEDOWN"); // ~INPUT_7B7B256B~
+            API.RegisterKeyMapping("inferno-vehicle-attachment-rotate-left", "Rotate attached vehicle left.", "keyboard", "NUMPAD7"); // ~INPUT_6DC8415B~
+            API.RegisterKeyMapping("inferno-vehicle-attachment-rotate-right", "Rotate attached vehicle right.", "keyboard", "NUMPAD9"); /// ~INPUT_4EEC321F~
+            API.RegisterKeyMapping("inferno-vehicle-attachment-rotate-up", "Rotate attached vehicle up.", "keyboard", "INSERT"); // ~INPUT_83B8F159~
+            API.RegisterKeyMapping("inferno-vehicle-attachment-rotate-down", "Rotate attached vehicle down.", "keyboard", "DELETE"); // ~INPUT_EE722E7A~
+            API.RegisterKeyMapping("inferno-vehicle-attachment-confirm", "Confirm attached vehicle.", "keyboard", "ENTER"); // ~INPUT_CAAAA4F4~
+            API.RegisterKeyMapping("inferno-vehicle-attachment-confirm", "Confirm attached vehicle.", "keyboard", "NUMPADENTER"); // ~INPUT_CAAAA4F4~
             #endregion
 
             #region Load configuration file
@@ -571,9 +578,16 @@ namespace InfernoCollection.VehicleCollection.Client
         /// </summary>
         internal void ShowTowControls()
         {
-            if (CONFIG.EnableChatMessage)
+            if (CONFIG.EnableInstructions)
             {
-                TriggerEvent("chatMessage", "Tow", new[] { 0, 255, 0 }, TOW_CONTROLS);
+                API.BeginTextCommandDisplayHelp("CELL_EMAIL_BCON");
+
+                foreach (string s in Screen.StringToArray(TOW_CONTROLS))
+                {
+                    API.AddTextComponentSubstringPlayerName(s);
+                }
+
+                API.EndTextCommandDisplayHelp(0, false, true, CONFIG.InstructionDisplayTime);
             }
         }
 
