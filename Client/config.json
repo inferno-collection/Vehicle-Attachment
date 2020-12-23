@@ -3,7 +3,7 @@
 
 	"EnableInstructions": true,
 
-	"InstructionDisplayTime" 15000,
+	"InstructionDisplayTime": 15000,
 
 	"AttachmentBlacklist": [
 		"blimp"
