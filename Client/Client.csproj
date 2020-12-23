@@ -49,9 +49,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Main.cs" />
+    <Compile Include="Models\AttachmentControl.cs" />
     <Compile Include="Models\AttachmentStage.cs" />
     <Compile Include="Models\Config.cs" />
-    <Compile Include="Models\CrossFrameControl.cs" />
     <Compile Include="Models\Towing.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

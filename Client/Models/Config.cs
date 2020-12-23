@@ -1,5 +1,5 @@
 ﻿/*
- * Inferno Collection Vehicle Attachment 1.21 Beta
+ * Inferno Collection Vehicle Attachment 1.3 Beta
  * 
  * Copyright (c) 2019-2020, Christopher M, Inferno Collection. All rights reserved.
  * 
@@ -19,7 +19,9 @@ namespace InfernoCollection.VehicleAttachment.Client.Models
     public class Config
     {
         public bool EnableLine { get; set; } = true;
-        public bool EnableChatMessage { get; set; } = true;
+        public bool EnableInstructions { get; set; } = true;
+
+        public int InstructionDisplayTime { get; set; } = 15000;
 
         public IReadOnlyList<Model> AttachmentBlacklist { get; set; } =
             new List<Model>() {
