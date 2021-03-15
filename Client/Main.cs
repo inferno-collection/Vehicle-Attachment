@@ -262,7 +262,7 @@ namespace InfernoCollection.VehicleCollection.Client
             _attachmentStage = AttachmentStage.Predetach;
 
             Game.PlaySound("TOGGLE_ON", "HUD_FRONTEND_DEFAULT_SOUNDSET");
-            Screen.ShowNotification("~g~Follow the instructions to deatch the vehicle.");
+            Screen.ShowNotification("~g~Follow the instructions to detach the vehicle.");
         }
         #endregion
 
@@ -682,7 +682,7 @@ namespace InfernoCollection.VehicleCollection.Client
                     }
                     else if (_attachmentStage == AttachmentStage.Detach)
                     {
-                        Screen.ShowNotification($"~g~{vehicleBeingTowed.LocalizedName} deatached!");
+                        Screen.ShowNotification($"~g~{vehicleBeingTowed.LocalizedName} detached!");
 
                         ResetTowedVehicle(vehicleBeingTowed);
 
