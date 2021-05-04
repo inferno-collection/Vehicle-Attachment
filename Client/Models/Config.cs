@@ -27,6 +27,7 @@ namespace InfernoCollection.VehicleAttachment.Client.Models
 
         public bool BlacklistToWhitelist { get; set; } = false;
         public bool WhitelistForTowedVehicles { get; set; } = false;
+        public int MaxNumberOfAttachedVehicles { get; set; } = -1;
         public float MaxDistanceFromTowVehicle { get; set; } = 220.0f;
         public float ChangeAmount { get; set; } = 0.2f;
         public float FasterAmount { get; set; } = 2.0f;

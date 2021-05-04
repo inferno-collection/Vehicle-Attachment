@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Inferno Collection Vehicle Attachment 1.4 Alpha
  * 
  * Copyright (c) 2019-2020, Christopher M, Inferno Collection. All rights reserved.
@@ -253,53 +253,60 @@ namespace InfernoCollection.VehicleCollection.Client
         [EventHandler("Inferno-Collection:Vehicle-Attachment:RemoveLastAttachment")]
         internal void OnRemoveLastAttachment()
         {
-            Vehicle towVehicle = Game.PlayerPed.LastVehicle;
-
-            if (_attachmentStage != AttachmentStage.None)
+            if (Entity.Exists(_tempTowVehicle) || Entity.Exists(_tempVehicleBeingTowed))
             {
-                Screen.ShowNotification("~r~You are already interacting with another vehicle!");
-            }
-            else if (!Entity.Exists(towVehicle))
-            {
-                Screen.ShowNotification("~r~Your last vehicle was not towing anything!", true);
-            }
-            else if (towVehicle.Position.DistanceToSquared2D(Game.PlayerPed.Position) > _config.MaxDistanceFromTowVehicle)
-            {
-                Screen.ShowNotification($"~r~{towVehicle.LocalizedName ?? "Tow truck"} too far away!", true);
+                Screen.ShowNotification("~o~Use \"/attach cancel\" to cancel attachment");
             }
             else
             {
-                List<TowedVehicle> towedVehicles = GetTowedVehicles(towVehicle);
+                Vehicle towVehicle = Game.PlayerPed.LastVehicle;
 
-                if (towedVehicles.Count() == 0)
+                if (_attachmentStage != AttachmentStage.None)
                 {
-                    Screen.ShowNotification("~r~Your last vehicle is not towing anything!");
+                    Screen.ShowNotification("~r~You are already interacting with another vehicle!");
+                }
+                else if (!Entity.Exists(towVehicle))
+                {
+                    Screen.ShowNotification("~r~Your last vehicle was not towing anything!", true);
+                }
+                else if (towVehicle.Position.DistanceToSquared2D(Game.PlayerPed.Position) > _config.MaxDistanceFromTowVehicle)
+                {
+                    Screen.ShowNotification($"~r~{towVehicle.LocalizedName ?? "Tow truck"} too far away!", true);
                 }
                 else
                 {
-                    TowedVehicle towedVehicle = towedVehicles.Last();
+                    List<TowedVehicle> towedVehicles = GetTowedVehicles(towVehicle);
 
-                    Vehicle vehicleBeingTowed = (Vehicle)Entity.FromNetworkId(towedVehicle.NetworkId);
-
-                    if (!Entity.Exists(vehicleBeingTowed))
+                    if (towedVehicles.Count() == 0)
                     {
-                        Game.PlaySound("CANCEL", "HUD_FREEMODE_SOUNDSET");
-                        Screen.ShowNotification("~r~Vehicle being towed deleted!");
+                        Screen.ShowNotification("~r~Your last vehicle is not towing anything!");
                     }
                     else
                     {
-                        _tempTowVehicle = towVehicle;
-                        _tempVehicleBeingTowed = vehicleBeingTowed;
+                        TowedVehicle towedVehicle = towedVehicles.Last();
 
-                        ShowTowControls();
+                        Vehicle vehicleBeingTowed = (Vehicle)Entity.FromNetworkId(towedVehicle.NetworkId);
 
-                        _tempVehicleBeingTowed.Opacity = 225;
+                        if (!Entity.Exists(vehicleBeingTowed))
+                        {
+                            Game.PlaySound("CANCEL", "HUD_FREEMODE_SOUNDSET");
+                            Screen.ShowNotification("~r~Vehicle being towed deleted!");
+                        }
+                        else
+                        {
+                            _tempTowVehicle = towVehicle;
+                            _tempVehicleBeingTowed = vehicleBeingTowed;
 
-                        _attachmentStage = AttachmentStage.Detach;
-                        Tick += AttachmentTick;
+                            ShowTowControls();
 
-                        Game.PlaySound("TOGGLE_ON", "HUD_FRONTEND_DEFAULT_SOUNDSET");
-                        Screen.ShowNotification("~g~Follow the instructions to detach the vehicle.");
+                            _tempVehicleBeingTowed.Opacity = 225;
+
+                            _attachmentStage = AttachmentStage.Detach;
+                            Tick += AttachmentTick;
+
+                            Game.PlaySound("TOGGLE_ON", "HUD_FRONTEND_DEFAULT_SOUNDSET");
+                            Screen.ShowNotification("~g~Follow the instructions to detach the vehicle.");
+                        }
                     }
                 }
             }
@@ -333,6 +340,10 @@ namespace InfernoCollection.VehicleCollection.Client
                         )
                         {
                             Screen.DisplayHelpTextThisFrame($"The {towTruck.LocalizedName ?? "tow truck"} cannot be used as a tow vehicle!");
+                        }
+                        else if (_config.MaxNumberOfAttachedVehicles > 0 && GetTowedVehicles(towTruck).Count() >= _config.MaxNumberOfAttachedVehicles)
+                        {
+                            Screen.DisplayHelpTextThisFrame($"{towTruck.LocalizedName ?? "tow truck"} cannot tow any more vehicles.");
                         }
                         else
                         {
