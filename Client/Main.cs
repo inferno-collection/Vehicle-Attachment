@@ -81,7 +81,6 @@ namespace InfernoCollection.VehicleCollection.Client
             API.RegisterKeyMapping("inferno-vehicle-attachment-rotate-right", "Rotate attached vehicle right.", "keyboard", "NUMPAD9"); /// ~INPUT_4EEC321F~
             API.RegisterKeyMapping("inferno-vehicle-attachment-rotate-up", "Rotate attached vehicle up.", "keyboard", "INSERT"); // ~INPUT_83B8F159~
             API.RegisterKeyMapping("inferno-vehicle-attachment-rotate-down", "Rotate attached vehicle down.", "keyboard", "DELETE"); // ~INPUT_EE722E7A~
-            API.RegisterKeyMapping("inferno-vehicle-attachment-confirm", "Confirm attached vehicle.", "keyboard", "ENTER"); // ~INPUT_CAAAA4F4~
             API.RegisterKeyMapping("inferno-vehicle-attachment-confirm", "Confirm attached vehicle.", "keyboard", "NUMPADENTER"); // ~INPUT_CAAAA4F4~
             #endregion
 
