@@ -1,5 +1,5 @@
 ﻿/*
- * Inferno Collection Vehicle Attachment 1.3 Beta
+ * Inferno Collection Vehicle Attachment 1.4 Alpha
  * 
  * Copyright (c) 2019-2020, Christopher M, Inferno Collection. All rights reserved.
  * 
@@ -23,10 +23,7 @@ namespace InfernoCollection.VehicleAttachment.Client.Models
 
         public int InstructionDisplayTime { get; set; } = 15000;
 
-        public IReadOnlyList<Model> AttachmentBlacklist { get; set; } =
-            new List<Model>() {
-                new Model("blimp")
-            };
+        public IReadOnlyList<Model> AttachmentBlacklist { get; set; } = new List<Model>() { new Model("blimp") };
 
         public bool BlacklistToWhitelist { get; set; } = false;
         public bool WhitelistForTowedVehicles { get; set; } = false;

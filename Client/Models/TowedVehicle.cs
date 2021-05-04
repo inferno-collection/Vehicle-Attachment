@@ -1,5 +1,5 @@
 ﻿/*
- * Inferno Collection Vehicle Attachment 1.3 Beta
+ * Inferno Collection Vehicle Attachment 1.4 Alpha
  * 
  * Copyright (c) 2019-2020, Christopher M, Inferno Collection. All rights reserved.
  * 
@@ -15,10 +15,9 @@ using CitizenFX.Core;
 
 namespace InfernoCollection.VehicleAttachment.Client.Models
 {
-    public class Towing
+    public class TowedVehicle
     {
-        public int TowVehicle { get; set; } = -1;
-        public int VehicleBeingTowed { get; set; } = -1;
+        public int NetworkId { get; set; } = -1;
         public Vector3 AttachmentPosition { get; set; }
         public Vector3 AttachmentRotation { get; set; }
     }

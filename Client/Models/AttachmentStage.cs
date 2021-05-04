@@ -1,5 +1,5 @@
 ﻿/*
- * Inferno Collection Vehicle Attachment 1.3 Beta
+ * Inferno Collection Vehicle Attachment 1.4 Alpha
  * 
  * Copyright (c) 2019-2020, Christopher M, Inferno Collection. All rights reserved.
  * 
@@ -19,7 +19,6 @@ namespace InfernoCollection.VehicleAttachment.Client.Models
         TowTruck,
         VehicleToBeTowed,
         Position,
-        Predetach,
         Detach,
         Cancel
     }
