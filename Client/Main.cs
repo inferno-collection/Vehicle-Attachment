@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Inferno Collection Vehicle Attachment 1.4 Alpha
  * 
  * Copyright (c) 2019-2020, Christopher M, Inferno Collection. All rights reserved.
@@ -61,6 +61,12 @@ namespace InfernoCollection.VehicleCollection.Client
         #region Constructor
         public Main()
         {
+            Game.PlayerPed.State.Set("oneSyncTest", "test", true);
+            if (Game.PlayerPed.State.Get("oneSyncTest") == null)
+            {
+                throw new Exception("This resource requires at least OneSync \"legacy\". Use Public Beta Version 1.3 if you do not want to use OneSync.");
+            }
+
             TriggerEvent("chat:addSuggestion", "/attach [help|cancel]", "Starts the process of attaching one vehicle to another.");
             TriggerEvent("chat:addSuggestion", "/detach [help|cancel]", "Starts the process of detaching one vehicle from another.");
 
