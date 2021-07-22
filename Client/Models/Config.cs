@@ -1,7 +1,7 @@
 ﻿/*
- * Inferno Collection Vehicle Attachment 1.3 Beta
+ * Inferno Collection Vehicle Attachment 1.41 Beta
  * 
- * Copyright (c) 2019-2020, Christopher M, Inferno Collection. All rights reserved.
+ * Copyright (c) 2019-2021, Christopher M, Inferno Collection. All rights reserved.
  * 
  * This project is licensed under the following:
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to use, copy, modify, and merge the software, under the following conditions:
@@ -23,13 +23,11 @@ namespace InfernoCollection.VehicleAttachment.Client.Models
 
         public int InstructionDisplayTime { get; set; } = 15000;
 
-        public IReadOnlyList<Model> AttachmentBlacklist { get; set; } =
-            new List<Model>() {
-                new Model("blimp")
-            };
+        public IReadOnlyList<Model> AttachmentBlacklist { get; set; } = new List<Model>() { new Model("blimp") };
 
         public bool BlacklistToWhitelist { get; set; } = false;
         public bool WhitelistForTowedVehicles { get; set; } = false;
+        public int MaxNumberOfAttachedVehicles { get; set; } = -1;
         public float MaxDistanceFromTowVehicle { get; set; } = 220.0f;
         public float ChangeAmount { get; set; } = 0.2f;
         public float FasterAmount { get; set; } = 2.0f;

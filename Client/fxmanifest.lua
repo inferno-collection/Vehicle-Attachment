@@ -1,6 +1,6 @@
--- Inferno Collection Vehicle Attachment 1.3 Beta
+-- Inferno Collection Vehicle Attachment 1.41 Beta
 -- 
--- Copyright (c) 2019-2020, Christopher M, Inferno Collection. All rights reserved.
+-- Copyright (c) 2019-2021, Christopher M, Inferno Collection. All rights reserved.
 -- 
 -- This project is licensed under the following:
 -- Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to use, copy, modify, and merge the software, under the following conditions:
@@ -15,13 +15,11 @@ description "A lightweight vehicle attachment/tow script for FiveM."
 
 author "Inferno Collection (inferno-collection.com)"
 
-version "1.3 Beta"
+version "1.41 Beta"
 
 url "https://inferno-collection.com"
 
 client_script "VehicleAttachment.Client.net.dll"
-
-server_script "VehicleAttachment.Server.net.dll"
 
 files {
     "config.json",

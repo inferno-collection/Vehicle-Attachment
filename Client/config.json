@@ -13,6 +13,8 @@
 
 	"WhitelistForTowedVehicles": false,
 
+	"MaxNumberOfAttachedVehicles": -1,
+
 	"MaxDistanceFromTowVehicle": 220.0,
 
 	"ChangeAmount": 0.2,
