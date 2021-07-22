@@ -1,7 +1,7 @@
 ﻿/*
- * Inferno Collection Vehicle Attachment 1.41 Alpha
+ * Inferno Collection Vehicle Attachment 1.41 Beta
  * 
- * Copyright (c) 2019-2020, Christopher M, Inferno Collection. All rights reserved.
+ * Copyright (c) 2019-2021, Christopher M, Inferno Collection. All rights reserved.
  * 
  * This project is licensed under the following:
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to use, copy, modify, and merge the software, under the following conditions:
@@ -52,7 +52,7 @@ namespace InfernoCollection.VehicleCollection.Client
             _tempTowVehicle,
             _tempVehicleBeingTowed;
 
-        internal Config _config = new Config();       
+        internal Config _config = new Config();
 
         internal AttachmentStage _attachmentStage;
         internal AttachmentStage _previousAttachmentStage;
@@ -529,9 +529,9 @@ namespace InfernoCollection.VehicleCollection.Client
 
         #region Functions
         /// <summary>
-        /// Returns the <see cref="Vehicle"/> infront of the player
+        /// Returns the <see cref="Vehicle"/> in front of the player
         /// </summary>
-        /// <returns><see cref="Vehicle"/> infront of player</returns>
+        /// <returns><see cref="Vehicle"/> in front of player</returns>
         internal Vehicle FindVehicle()
         {
             RaycastResult raycast = World.RaycastCapsule(Game.PlayerPed.Position, Game.PlayerPed.GetOffsetPosition(RAYCAST_VECTOR), 0.3f, (IntersectOptions)10, Game.PlayerPed);
