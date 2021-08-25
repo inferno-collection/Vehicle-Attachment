@@ -19,6 +19,7 @@ namespace InfernoCollection.VehicleAttachment.Client.Models
         TowTruck,
         VehicleToBeTowed,
         Position,
+        DriveOn,
         Detach,
         Cancel
     }

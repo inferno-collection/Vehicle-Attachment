@@ -45,6 +45,7 @@ namespace InfernoCollection.VehicleCollection.Client
 
         #region General Variables
         internal bool
+            _driveOn,
             _goFaster,
             _goSlower;
 
@@ -132,6 +133,12 @@ namespace InfernoCollection.VehicleCollection.Client
                 if (args[0] == "help")
                 {
                     ShowTowControls();
+                }
+                else if (args[0] == "driveon")
+                {
+                    _driveOn = !_driveOn;
+
+                    Screen.ShowNotification($"~o~Drive On mode {(_driveOn ? "~g~enabled" : "~r~disabled")}", true);
                 }
                 else if (args[0] == "cancel")
                 {
@@ -290,15 +297,32 @@ namespace InfernoCollection.VehicleCollection.Client
                         _tempTowVehicle = towVehicle;
                         _tempVehicleBeingTowed = vehicleBeingTowed;
 
-                        ShowTowControls();
-
-                        _tempVehicleBeingTowed.Opacity = 225;
-
-                        _attachmentStage = AttachmentStage.Detach;
-                        Tick += AttachmentTick;
-
                         Game.PlaySound("TOGGLE_ON", "HUD_FRONTEND_DEFAULT_SOUNDSET");
-                        Screen.ShowNotification("~g~Follow the instructions to detach the vehicle.");
+
+                        if (_driveOn)
+                        {
+                            Screen.ShowNotification($"~g~{_tempVehicleBeingTowed.LocalizedName ?? "Vehicle"} detached, drive it off.");
+
+                            ResetTowedVehicle(_tempVehicleBeingTowed);
+                            SetVehicleAsBeingUsed(_tempVehicleBeingTowed, false);
+                            RemoveTowedVehicle(_tempTowVehicle, _tempVehicleBeingTowed);
+
+                            _tempTowVehicle = null;
+                            _tempVehicleBeingTowed = null;
+
+                            Game.PlaySound("WAYPOINT_SET", "HUD_FRONTEND_DEFAULT_SOUNDSET");
+                        }
+                        else
+                        {
+                            ShowTowControls();
+
+                            _tempVehicleBeingTowed.Opacity = 225;
+
+                            _attachmentStage = AttachmentStage.Detach;
+                            Tick += AttachmentTick;
+
+                            Screen.ShowNotification("~g~Follow the instructions to detach the vehicle.");
+                        }                        
                     }
                 }
             }
@@ -433,28 +457,45 @@ namespace InfernoCollection.VehicleCollection.Client
                                 else
                                 {
                                     Game.PlaySound("OK", "HUD_FRONTEND_DEFAULT_SOUNDSET");
-                                    Screen.ShowNotification($"~g~{vehicleToBeTowed.LocalizedName ?? "vehicle"} confirmed as vehicle to be towed! Follow instructions to position vehicle.");
 
-                                    ShowTowControls();
-
-                                    vehicleToBeTowed.Opacity = 225;
-                                    vehicleToBeTowed.IsPersistent = true;
-                                    vehicleToBeTowed.IsPositionFrozen = true;
-                                    vehicleToBeTowed.IsCollisionEnabled = false;
-                                    vehicleToBeTowed.LockStatus = VehicleLockStatus.CannotBeTriedToEnter;
-                                    vehicleToBeTowed.AttachTo(_tempTowVehicle, POSITION_VECTOR, ROTATION_VECTOR);
-
-                                    AddNewTowedVehicle(_tempTowVehicle, new TowedVehicle()
+                                    if (_driveOn)
                                     {
-                                        NetworkId = vehicleToBeTowed.NetworkId,
-                                        AttachmentPosition = POSITION_VECTOR,
-                                        AttachmentRotation = ROTATION_VECTOR
-                                    });
+                                        Screen.ShowNotification($"~g~{vehicleToBeTowed.LocalizedName ?? "vehicle"} confirmed as vehicle to be towed! Drive on then confirm.");
 
-                                    _tempVehicleBeingTowed = vehicleToBeTowed;
-                                    _attachmentStage = AttachmentStage.Position;
+                                        vehicleToBeTowed.IsPersistent = true;
 
-                                    await Delay(1000);
+                                        AddNewTowedVehicle(_tempTowVehicle, new TowedVehicle() { NetworkId = vehicleToBeTowed.NetworkId });
+
+                                        _tempVehicleBeingTowed = vehicleToBeTowed;
+                                        _attachmentStage = AttachmentStage.DriveOn;
+
+                                        await Delay(1000);
+                                    }
+                                    else
+                                    {
+                                        Screen.ShowNotification($"~g~{vehicleToBeTowed.LocalizedName ?? "vehicle"} confirmed as vehicle to be towed! Follow instructions to position vehicle.");
+
+                                        ShowTowControls();
+
+                                        vehicleToBeTowed.Opacity = 225;
+                                        vehicleToBeTowed.IsPersistent = true;
+                                        vehicleToBeTowed.IsPositionFrozen = true;
+                                        vehicleToBeTowed.IsCollisionEnabled = false;
+                                        vehicleToBeTowed.LockStatus = VehicleLockStatus.CannotBeTriedToEnter;
+                                        vehicleToBeTowed.AttachTo(_tempTowVehicle, POSITION_VECTOR, ROTATION_VECTOR);
+
+                                        AddNewTowedVehicle(_tempTowVehicle, new TowedVehicle()
+                                        {
+                                            NetworkId = vehicleToBeTowed.NetworkId,
+                                            AttachmentPosition = POSITION_VECTOR,
+                                            AttachmentRotation = ROTATION_VECTOR
+                                        });
+
+                                        _tempVehicleBeingTowed = vehicleToBeTowed;
+                                        _attachmentStage = AttachmentStage.Position;
+
+                                        await Delay(1000);
+                                    }
                                 }
                             }
                         }
@@ -501,6 +542,12 @@ namespace InfernoCollection.VehicleCollection.Client
                             _attachmentStage = AttachmentStage.None;
                         }
                     }
+                    break;
+                #endregion
+
+                #region Drive On
+                case AttachmentStage.DriveOn:
+                    Screen.DisplayHelpTextThisFrame("~INPUT_FRONTEND_RDOWN~ to confirm position");
                     break;
                 #endregion
 
@@ -555,16 +602,20 @@ namespace InfernoCollection.VehicleCollection.Client
 
             vehicle.Opacity = 0;
             vehicle.Detach();
-            
-            position = vehicle.Position;
 
-            vehicle.PlaceOnGround();
-            vehicle.IsCollisionEnabled = true;
-            vehicle.IsPositionFrozen = false;
+            if (!_driveOn)
+            {
+                position = vehicle.Position;
 
-            await Delay(1000);
+                vehicle.PlaceOnGround();
+                vehicle.IsCollisionEnabled = true;
+                vehicle.IsPositionFrozen = false;
 
-            vehicle.Position = position;
+                await Delay(1000);
+
+                vehicle.Position = position;
+            }
+
             vehicle.ResetOpacity();
             vehicle.LockStatus = VehicleLockStatus.Unlocked;
             vehicle.ApplyForce(new Vector3(0.0f, 0.0f, 0.001f));
@@ -596,6 +647,52 @@ namespace InfernoCollection.VehicleCollection.Client
         {
             if (_attachmentStage != AttachmentStage.Position && _attachmentStage != AttachmentStage.Detach)
             {
+                if (_attachmentStage != AttachmentStage.DriveOn || attachmentControl != AttachmentControl.Confirm)
+                {
+                    return;
+                }
+
+                TowedVehicle towedVehicle = GetTowedVehicles(_tempTowVehicle).Last();
+
+                if (_tempTowVehicle.Position.DistanceToSquared(_tempVehicleBeingTowed.Position) > _config.MaxDistanceFromTowVehicle)
+                {
+                    Screen.ShowNotification("~r~Cannot attach there, too far from tow vehicle!", true);
+                    return;
+                }
+
+                if (Game.PlayerPed.CurrentVehicle == _tempVehicleBeingTowed)
+                {
+                    Game.PlayerPed.Task.LeaveVehicle();
+                }
+
+                Vector3
+                    position = _tempTowVehicle.GetPositionOffset(_tempVehicleBeingTowed.Position),
+                    rotation = _tempVehicleBeingTowed.Rotation - _tempTowVehicle.Rotation;
+
+                _tempVehicleBeingTowed.LockStatus = VehicleLockStatus.CannotBeTriedToEnter;
+                _tempVehicleBeingTowed.AttachTo(_tempTowVehicle, position, rotation);
+
+                TowedVehicle updatedTowedVehicle = new TowedVehicle()
+                {
+                    NetworkId = towedVehicle.NetworkId,
+                    AttachmentPosition = position,
+                    AttachmentRotation = rotation
+                };
+
+                UpdateTowedVehicle(_tempTowVehicle, _tempVehicleBeingTowed, updatedTowedVehicle);
+
+                SetVehicleAsBeingUsed(_tempTowVehicle, false);
+                SetVehicleAsBeingUsed(_tempVehicleBeingTowed, false);
+
+                Screen.ShowNotification("~g~Attachment complete! Drive safe.");
+
+                _tempTowVehicle = null;
+                _tempVehicleBeingTowed = null;
+
+                Game.PlaySound("WAYPOINT_SET", "HUD_FRONTEND_DEFAULT_SOUNDSET");
+
+                Tick -= AttachmentTick;
+                _attachmentStage = AttachmentStage.None;
                 return;
             }
 
