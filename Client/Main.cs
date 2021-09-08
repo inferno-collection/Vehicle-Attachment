@@ -1,5 +1,5 @@
 ﻿/*
- * Inferno Collection Vehicle Attachment 1.5 Alpha
+ * Inferno Collection Vehicle Attachment 1.5 Beta
  * 
  * Copyright (c) 2019-2021, Christopher M, Inferno Collection. All rights reserved.
  * 
@@ -68,7 +68,7 @@ namespace InfernoCollection.VehicleCollection.Client
                 throw new Exception("This resource requires at least OneSync \"legacy\". Use Public Beta Version 1.3 if you do not want to use OneSync.");
             }
 
-            TriggerEvent("chat:addSuggestion", "/attach [help|cancel]", "Starts the process of attaching one vehicle to another.");
+            TriggerEvent("chat:addSuggestion", "/attach [driveon|help|cancel]", "Starts the process of attaching one vehicle to another.");
             TriggerEvent("chat:addSuggestion", "/detach [help|cancel]", "Starts the process of detaching one vehicle from another.");
 
             #region Key Mapping

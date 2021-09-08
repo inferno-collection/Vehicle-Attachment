@@ -1,8 +1,8 @@
 ![top_image|2120x352](https://i.imgur.com/eydEeF0.jpg) 
 # Inferno Collection: Vehicle Attachment
-[![Build Status](https://travis-ci.com/inferno-collection/Vehicle-Attachment.svg?branch=feature/1.5-alpha)](https://travis-ci.com/inferno-collection/Vehicle-Attachment)
+[![Build Status](https://travis-ci.com/inferno-collection/Vehicle-Attachment.svg?branch=master)](https://travis-ci.com/inferno-collection/Vehicle-Attachment)
 
-__Public Alpha Version 1.5__
+__Public Beta Version 1.5__
 
 A lightweight vehicle attachment/tow script for FiveM. Attach vehicles to other vehicles and adjust the positioning with easy to use keybinds. Multiple attachments to the same vehicles (such as a flatbed trailer) are also possible.
 
@@ -17,9 +17,10 @@ Presently, the following can be customized:
 - Max number of vehicles attached to one tow vehicle
 - Max distance from tow vehicles other vehicles can be attached.
 - Control over how fast/slow attachment positioning is.
+- Option to drive vehicles onto towing vehicle to confirm position (`/attach driveon`)
 
 Usage:
-- Go up to a vehicle and type `/attach`
+- Go up to a vehicle and type `/attach` or `/attach driveon`
 - Select the tow vehicle, and then vehicle to be towed with the `Enter` key
 - Follow on screen instructions to position the vehicle
 - Repeat for as many vehicles as you would like to attach

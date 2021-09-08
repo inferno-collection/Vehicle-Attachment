@@ -1,5 +1,5 @@
 ﻿/*
- * Inferno Collection Vehicle Attachment 1.5 Alpha
+ * Inferno Collection Vehicle Attachment 1.5 Beta
  * 
  * Copyright (c) 2019-2021, Christopher M, Inferno Collection. All rights reserved.
  * 
