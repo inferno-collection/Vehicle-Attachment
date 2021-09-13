@@ -9,19 +9,25 @@
 # Modified copies of the software may only be shared in an uncompiled format.
 # THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-language: csharp
-solution: Vehicle-Attachment.sln
-mono: latest
-dotnet: 3.1
-install:
-  - nuget restore Vehicle-Attachment.sln
-script:
-  - msbuild Vehicle-Attachment.sln /p:Configuration=Release /p:TargetFrameworkVersion="v4.5.2" /p:Verbosity=detailed
-after_success:
-  - wget https://raw.githubusercontent.com/DiscordHooks/travis-ci-discord-webhook/master/send.sh
-  - chmod +x send.sh
-  - ./send.sh success $WEBHOOK_URL
-after_failure:
-  - wget https://raw.githubusercontent.com/DiscordHooks/travis-ci-discord-webhook/master/send.sh
-  - chmod +x send.sh
-  - ./send.sh failure $WEBHOOK_URL
+name: Build and Check
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup .NET 3.1
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 3.1
+    - name: Restore dependencies
+      run: nuget restore Vehicle-Attachment.sln
+    - name: Build
+      run: msbuild Vehicle-Attachment.sln /p:Configuration=Release /p:TargetFrameworkVersion="v4.5.2" /p:Verbosity=detailed
+    - uses: sarisia/actions-status-discord@v1
+      if: always()
+      with:
+        webhook: ${{ secrets.DISCORD_WEBHOOK }}
