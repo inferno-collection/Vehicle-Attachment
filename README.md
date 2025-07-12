@@ -1,3 +1,7 @@
+> Unsupported as of 07/13/2025 - Downloads still available, but no support will be provided for any issues found.
+
+***
+
 ![top_image|2120x352](https://i.imgur.com/eydEeF0.jpg) 
 # Inferno Collection: Vehicle Attachment
 [![Build Status](https://travis-ci.com/inferno-collection/Vehicle-Attachment.svg?branch=master)](https://travis-ci.com/inferno-collection/Vehicle-Attachment)
