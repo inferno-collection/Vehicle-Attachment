@@ -15,19 +15,13 @@ on: [push, pull_request]
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
 
     steps:
-    - uses: actions/checkout@v2
-    - name: Setup .NET 3.1
-      uses: actions/setup-dotnet@v1
-      with:
-        dotnet-version: 3.1
+    - uses: actions/checkout@v3
+    - name: Add msbuild to PATH
+      uses: microsoft/setup-msbuild@v1.1
     - name: Restore dependencies
-      run: nuget restore Vehicle-Attachment.sln
-    - name: Build
-      run: msbuild Vehicle-Attachment.sln /p:Configuration=Release /p:TargetFrameworkVersion="v4.5.2" /p:Verbosity=detailed
-    - uses: sarisia/actions-status-discord@v1
-      if: always()
-      with:
-        webhook: ${{ secrets.DISCORD_WEBHOOK }}
+      run: nuget restore "Vehicle-Attachment.sln"
+    - name: Build Release
+      run: msbuild "Vehicle-Attachment.sln" /p:Configuration=Release /p:TargetFrameworkVersion="v4.5.2" /p:Verbosity=detailed /p:langversion=latest /maxcpucount
